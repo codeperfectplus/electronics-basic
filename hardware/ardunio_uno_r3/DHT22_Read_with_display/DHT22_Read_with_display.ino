@@ -14,38 +14,77 @@ DHT dht(DHTPIN, DHTTYPE);
 
 void showValues(float t, float h) {
   display.clearDisplay();
-  
+
+  // Refresh icon
+  display.drawCircle(120, 5, 3, SSD1306_WHITE); // Outer circle
+  display.drawLine(120, 2, 122, 4, SSD1306_WHITE); // Arrow part 1
+  display.drawLine(122, 4, 120, 6, SSD1306_WHITE); // Arrow part 2
+
   // Temperature line
   display.setTextSize(2);
   display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0, 0);
+  display.setCursor(0, 10);
   display.print("T: ");
   display.print(t, 1);
   display.print("C");
 
   // Humidity line
   display.setTextSize(2);
-  display.setCursor(0, 28);
+  display.setCursor(0, 35);
   display.print("H: ");
   display.print(h, 1);
   display.print("%");
 
-
-
-  // Signature
-  display.setTextSize(1);
-  display.setCursor(0, 54);
-  display.print("by codeperfectplus");
-
   display.display();
+}
+
+void bootingAnimation() {
+  // Booting animation with improved readability and icons
+  display.clearDisplay();
+  display.setTextSize(1.2);
+  display.setTextColor(SSD1306_WHITE);
+
+  // Display 'Developed by' with icon
+  display.drawCircle(10, 10, 5, SSD1306_WHITE); // Icon
+  display.setCursor(20, 5);
+  display.print("Developed by");
+  display.setCursor(20, 15);
+  display.print("codeperfectplus");
+  display.display();
+  delay(1500); // Show for 1.5 seconds
+
+  // Display 'Powered by' with icon
+  display.clearDisplay();
+  display.drawRect(5, 5, 10, 10, SSD1306_WHITE); // Icon
+  display.setCursor(20, 5);
+  display.print("Powered by");
+  display.setCursor(20, 15);
+  display.print("Arduino");
+  display.display();
+  delay(1500); // Show for 1.5 seconds
+
+  // Progress bar animation with text
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setCursor(0, 20);
+  display.print("Loading Sensors...");
+  display.display();
+
+   for (int i = 0; i <= 100; i += 10) {
+    display.fillRect(10, 40, i, 10, SSD1306_WHITE);
+    display.display();
+    delay(300); // 300ms * 10 = 3 seconds
+  }
 }
 
 void setup() {
   Serial.begin(9600);
-  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) { 
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
     Serial.println(F("SSD1306 allocation failed"));
-    for(;;);
+    for (;;)
+      ;
   }
+  // bootingAnimation();
   display.clearDisplay();
   display.display();
   dht.begin();
@@ -67,5 +106,5 @@ void loop() {
   }
 
   showValues(t, h);
-  delay(5000); // Update every 5 seconds
+  delay(2000);  // Update every 2 seconds
 }
